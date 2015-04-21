@@ -1,9 +1,9 @@
 # SmartStore
-SmartStore是一个android的数据库帮助库，几乎不用编数据库操作代码就可以实现数据库到java对象的映射
-使用SmartStore的方法很简单，比如现在需要创建并使用一个User的表，只需简单三步：<br>
+SmartStore是一个android的数据库帮助库，几乎不用编数据库操作代码就可以实现数据库到java对象的映射<br>
+使用SmartStore的方法很简单，比如现在需要创建一个User的表并使用User对象与之关联，只需简单三步：<br>
 
 1. 编写User对象，并在User对象中标记出 数据库字段 和 主键字段<br> 
-<code>
+<pre>
 public class User extends SmartModel {
 
     @DBPrimaryKey
@@ -19,10 +19,10 @@ public class User extends SmartModel {
     //not db field
     public int user_sex;
 }
-</code> 
+</pre> 
 
 2. 在应用初始化的时候，设置数据库的代理<br>
-<code>
+<pre>
 WPStore.setWPStoreDelegate(new WPStoreDelegate() {
 			@Override
 			public void onCreateTables(SQLiteDatabase db) {
@@ -42,10 +42,10 @@ WPStore.setWPStoreDelegate(new WPStoreDelegate() {
 				return getApplicationContext();
 			}
 		});
-</code> 
+</pre> 
 
 3. 在需要的地反使用数据库<br>
-<code>
+<pre>
 	User user = new User();
 	user.user_id = 1001;
 	user.user_name = "Summer";
@@ -68,4 +68,4 @@ WPStore.setWPStoreDelegate(new WPStoreDelegate() {
 	    ret.append("id -->"+u.user_id+"  name-->"+u.user_name+"  age-->"+u.user_age+"  sex-->"+u.user_sex+"\n");
 	}
 	Log.d("test", ret.toString());
-</code>
+</pre>
