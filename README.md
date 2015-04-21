@@ -1,0 +1,2 @@
+# SmartStore
+SmartStore是一个android的数据库帮助库，使用这个库后，几乎不用编写代码就可以实现数据库数据到java对象的映射
