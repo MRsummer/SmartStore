@@ -83,7 +83,7 @@ WPStore.setWPStoreDelegate(new WPStoreDelegate() {
 * execSqlAsync(sql)  //异步执行sql
 
 #关于 smart store 的原理 和 注意事项
-* smart store 自动通过在类中标记数据库的字段，主键字段，能够自动生成数据库的创建语句（以类名为表明，字段名为数据库字段名称）
+* smart store 通过类中标记的数据库字段和主键字段，能够自动生成数据库的创建语句（以类名为表明，字段名为数据库字段名称），以及数据库的查询 和 插入功能
 * smart store 通过主键进行存储和删除，所有如果需要调用save 方法 或者remove方法， 则需要加入主键标记， 否则会报错
-* smart store 写的比较简单， 只支持 int long String 三种类型的数据， 但作者认为这三种在sqlite中也够用了， 所以需要注意java类中的字段类型
+* smart store 写的比较简单， 只支持 int long String 三种类型的字段， 但作者认为这三种字段对于sqlite来说也够用了， 所以需要注意java类中的字段类型
 
