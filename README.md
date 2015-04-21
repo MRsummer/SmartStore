@@ -1,23 +1,22 @@
 # SmartStore
-SmartStore是一个android的数据库帮助库，几乎不用编数据库操作代码就可以实现数据库到java对象的映射<br>
-使用SmartStore的方法很简单，比如现在需要创建一个User的表并使用User对象与之关联，只需简单三步：<br>
+SmartStore是一个android的数据库帮助库，几乎不用编数据库操作代码就可以实现数据库到java对象的映射，使用SmartStore的方法很简单，比如现在需要创建一个User的表并使用User对象与之关联，只需简单三步：<br>
 
 1. 编写User对象，并在User对象中标记出 数据库字段 和 主键字段<br> 
 <pre>
 public class User extends SmartModel {
 
-    @DBPrimaryKey
-    @DBField
-    public int user_id;
-
-    @DBField
-    public String user_name;
-
-    @DBField
-    public int user_age;
-
-    //not db field
-    public int user_sex;
+	    @DBPrimaryKey
+	    @DBField
+	    public int user_id;
+	
+	    @DBField
+	    public String user_name;
+	
+	    @DBField
+	    public int user_age;
+	
+	    //not db field
+	    public int user_sex;
 }
 </pre> 
 
