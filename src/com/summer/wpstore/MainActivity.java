@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.summer.smartstore.SmartModel;
@@ -14,6 +15,8 @@ import com.summer.smartstore.WPStoreDelegate;
 
 public class MainActivity extends Activity{
 
+	private int currentLoginUid = 1;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -22,18 +25,25 @@ public class MainActivity extends Activity{
 		WPStore.setWPStoreDelegate(new WPStoreDelegate() {
 			@Override
 			public void onCreateTables(SQLiteDatabase db) {
+				//这里可以做一些创建数据库和升级的操作
 				db.execSQL(new User().getCreateTableSql());
 			}
 			
 			@Override
-			public String getTableName() {
-				return "test.db";
+			public String getDBName() {
+				//这里可以判断登录用户，不用的用户返回不同的数据库名字
+				return "test" + currentLoginUid + ".db";
 			}
 			
 			@Override
 			public Context getContext() {
 				return getApplicationContext();
 			}
+
+			@Override
+			public void onDBDestroy(String oldDBPath) {
+				Log.d("MainActivity", "onDBDestroy");
+			}			
 		});
 		
 		TextView content = (TextView) findViewById(R.id.content);

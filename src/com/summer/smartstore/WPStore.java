@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Looper;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -22,6 +21,7 @@ public class WPStore {
 	private SQLiteDatabase db;
 	private ExecutorService dbExecutorService = Executors.newSingleThreadExecutor();
 	private Handler handler = new Handler(Looper.getMainLooper());
+	private static String curDBName;
 
 	public static WPStore getInstance() {
 		if(sDelegate == null){
@@ -33,8 +33,16 @@ public class WPStore {
 					sInstance = new WPStore();
 				}
 			}
+			return sInstance;
+		}else{
+			if(! sDelegate.getDBName().equals(curDBName)){
+				sInstance = null;
+				sDelegate.onDBDestroy(curDBName);
+				return getInstance();
+			}else{
+				return sInstance;
+			}
 		}
-		return sInstance;
 	}
 	
 	public static void setWPStoreDelegate(WPStoreDelegate delegate){
@@ -42,7 +50,8 @@ public class WPStore {
 	}
 	
 	private WPStore(){
-		String dbName = sDelegate.getTableName();
+		String dbName = sDelegate.getDBName();
+		curDBName = dbName;
 		Context context = sDelegate.getContext();
 		File dbFile = context.getDatabasePath(dbName);
 		try {

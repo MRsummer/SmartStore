@@ -1,9 +1,5 @@
 package com.summer.smartstore;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.util.Log;
-
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,7 +7,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.util.Log;
 
 /**
  * Created by zhuguangwen on 15/4/21.
@@ -19,14 +20,14 @@ import java.util.List;
  */
 public abstract class SmartModel{
 
-    private static List<Field> dbFieldList;
+	private static HashMap<String, List<Field>> dbFieldListMap;
 
     public String getTableName() {
         return this.getClass().getSimpleName();
     }
 
     public String getCreateTableSql(){
-        getDBFields();
+        List<Field> dbFieldList = getDBFields();
         StringBuilder fieldSB = new StringBuilder();
         for(int i = 0;i < dbFieldList.size();i ++){
             Field field = dbFieldList.get(i);
@@ -62,35 +63,30 @@ public abstract class SmartModel{
         String tableName = this.getClass().getSimpleName();
         return "create table if not exists "+tableName+" ( " + fieldSB.toString() + " )";
     }
-
-    public String getPrimaryKey() {
-        getDBFields();
+    
+    private Field getPrimaryKeyField(){
+    	List<Field> dbFieldList = getDBFields();
         for(Field field : dbFieldList){
             Annotation[] annotations = field.getAnnotations();
             for(Annotation a : annotations){
                 if(a instanceof DBPrimaryKey){
-                    return field.getName();
+                    return field;
                 }
             }
         }
         return null;
     }
-
+    
     public String getPrimaryKeyName() {
-        getDBFields();
-        for(Field field : dbFieldList){
-            Annotation[] annotations = field.getAnnotations();
-            for(Annotation a : annotations){
-                if(a instanceof DBPrimaryKey){
-                    return getStringValueFromField(field, this);
-                }
-            }
-        }
-        return null;
+    	return getPrimaryKeyField().getName();
+    }
+
+    public String getPrimaryKey() {
+    	return getStringValueFromField(getPrimaryKeyField(), this);
     }
 
     public SmartModel fromCursor(Cursor cursor){
-        getDBFields();
+    	List<Field> dbFieldList = getDBFields();
         try {
             if(cursor.moveToNext()){
                 Class thisClass = this.getClass();
@@ -107,7 +103,7 @@ public abstract class SmartModel{
     }
 
     public ContentValues toContentValues(){
-        getDBFields();
+    	List<Field> dbFieldList = getDBFields();
         try {
             ContentValues values = new ContentValues();
             for (Field f : dbFieldList) {
@@ -120,7 +116,8 @@ public abstract class SmartModel{
         }
     }
 
-    private void getDBFields(){
+    private List<Field> getDBFields(){
+    	List<Field> dbFieldList = dbFieldListMap.get(this.getClass().getName());
         if(dbFieldList == null){
             dbFieldList = new ArrayList<Field>();
             Field[] fields = this.getClass().getDeclaredFields();
@@ -137,6 +134,7 @@ public abstract class SmartModel{
                 throw new RuntimeException("no db field, at least one db field");
             }
         }
+        return dbFieldList;
     }
 
     private void setValueFromCursor(Field f, Object obj, Cursor cursor){
