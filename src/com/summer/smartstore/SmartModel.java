@@ -20,7 +20,7 @@ import android.util.Log;
  */
 public abstract class SmartModel{
 
-	private static HashMap<String, List<Field>> dbFieldListMap;
+	private static HashMap<String, List<Field>> dbFieldListMap = new HashMap<String, List<Field>>();
 
     public String getTableName() {
         return this.getClass().getSimpleName();
