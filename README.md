@@ -25,25 +25,30 @@ public class User extends SmartModel {
 WPStore.setWPStoreDelegate(new WPStoreDelegate() {
 			@Override
 			public void onCreateTables(SQLiteDatabase db) {
-				//需要创建的表（getCreateTableSql在SmartModel中实现）
+				//这里可以做一些创建数据库和升级的操作
 				db.execSQL(new User().getCreateTableSql());
 			}
 			
 			@Override
-			public String getTableName() {
-				//数据库的名称
-				return "test.db";
+			public String getDBName() {
+				//这里可以判断登录用户，不用的用户返回不同的数据库名字
+				return "test" + currentLoginUid + ".db";
 			}
 			
 			@Override
 			public Context getContext() {
-				//应用程序的Context
 				return getApplicationContext();
 			}
+
+			@Override
+			public void onDBDestroy(String oldDBPath) {
+				//数据库切换时旧数据库被销毁的通知
+				Log.d("MainActivity", "onDBDestroy");
+			}			
 		});
 </pre> 
 
-3. 在需要的地反使用数据库<br>
+3. 在需要的地方使用数据库<br>
 <pre>
 	User user = new User();
 	user.user_id = 1001;
